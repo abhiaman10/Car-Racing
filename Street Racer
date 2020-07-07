@@ -1,0 +1,192 @@
+import pygame as py
+import os
+import time
+import random
+screen_width=1300
+screen_height=780
+fps =50
+red=(255,0,0)
+black=(0,0,0)
+py.mixer.init()
+screen=py.display.set_mode((screen_width, screen_height))
+explosion=py.image.load("streetfightexp2.png")
+welcomeimg=py.image.load("streetwelcome.png")
+boostenemy=py.image.load("streetbooster2.png")
+welcomeimg =py.transform.scale(welcomeimg,(screen_width, screen_height)).convert_alpha()
+py.display.update()
+py.display.set_caption("Street Runner")
+speedx=random.randrange(6,8)
+class Bgimg(py.sprite.Sprite):
+    def __init__ (self):
+        py.sprite.Sprite.__init__(self)
+        self.image=py.image.load("streetfighterroad4.png")
+        self.rect=self.image.get_rect()
+        self.rect.bottomleft=(screen_width/2-600, screen_height/2+320)
+    def update(self):
+        self.rect.x -=45
+        if self.rect.left<=-100:
+            self.rect.left=0
+class Player(py.sprite.Sprite):
+    def __init__ (self):
+        py.sprite.Sprite.__init__(self)
+        self.image=py.image.load("streetfightercar2.png")
+        self.rect=self.image.get_rect()
+        self.rect.center=(screen_width/2, screen_height/2-40)
+    def update(self):
+        self.rect.x +=5
+        if self.rect.left>=80:
+            self.rect.left=80
+class Mob(py.sprite.Sprite):
+    def __init__ (self):
+        py.sprite.Sprite.__init__(self)
+        self.image=py.image.load("streetfightenemy1.png")
+        self.rect=self.image.get_rect()
+        self.rect.x=random.randrange(1300,1530)
+        self.speedx=random.randrange(8,12)
+    def update(self):
+        self.rect.x -=speedx
+        if self.rect.left <-200:
+            self.rect.x=random.randrange(1300,1530)
+            self.rect.y=random.randrange(480,600)
+class Mob2(py.sprite.Sprite):
+    def __init__ (self):
+        py.sprite.Sprite.__init__(self)
+        self.image=py.image.load("streetfightenemy2.png")
+        self.rect=self.image.get_rect()
+        self.rect.x=random.randrange(1400,1950)
+        self.rect.y=random.randrange(480,600)
+        self.speedy=random.randrange(4,8)
+    def update(self):
+        self.rect.x -=18
+        
+        if self.rect.left <-2900:
+            self.rect.x=random.randrange(1400,1450)
+            self.rect.y=random.randrange(220,340)
+            self.speedx=random.randrange(4,8)
+class Mob3(py.sprite.Sprite):
+    def __init__ (self):
+        py.sprite.Sprite.__init__(self)
+        self.image=py.image.load("streetfightenemy3.png")
+        self.rect=self.image.get_rect()
+        self.rect.x=random.randrange(2000,2100)
+        self.rect.y=random.randrange(0,30)
+        self.speedx=random.randrange(4,8)
+    def update(self):
+        self.rect.x -=speedx
+        if self.rect.left <-800:
+            self.rect.x=random.randrange(5000,6000)
+            self.rect.y=random.randrange(0,30)
+            self.speedy=random.randrange(4,8)
+class Mob4(py.sprite.Sprite):
+    def __init__ (self):
+        py.sprite.Sprite.__init__(self)
+        self.image=py.image.load("streetfightenemy4.png")
+        self.rect=self.image.get_rect()
+        self.rect.x=random.randrange(2000,2100)
+        self.rect.y=random.randrange(370,390)
+        self.speedx=random.randrange(4,8)
+    def update(self):
+        self.rect.x -=speedx
+        if self.rect.left <-800:
+            self.rect.x=random.randrange(5900,6000)
+            self.rect.y=random.randrange(370,390)
+            self.speedy=random.randrange(4,8)
+def text_screen(text,color,x,y):
+    screen_text=font.render(text,True,color)
+    screen.blit(screen_text,[x,y])
+def text_screen2(text,color,x,y):
+    screen_text=font2.render(text,True,color)
+    screen.blit(screen_text,[x,y])
+
+py.display.update()      
+py.init()
+clock=py.time.Clock()
+all_sprites=py.sprite.Group()
+bgimg=Bgimg()
+player= Player()
+all_sprites.add(player)
+all_sprites.add(bgimg)
+mobs=py.sprite.Group()
+mobs2=py.sprite.Group()
+for i in range(1):
+    m=Mob()
+    all_sprites.add(m)
+    mobs.add(m)
+m2=Mob2()
+all_sprites.add(m2)
+mobs2.add(m2)
+m3=Mob3()
+m4=Mob4()
+all_sprites.add(m3)
+all_sprites.add(m4)
+mobs2.add(m3)
+mobs2.add(m4)
+playerx=370
+playery=480
+font=py.font.SysFont(None,45)
+font2=py.font.SysFont(None,75)
+def welcome():
+    running=True
+    while running:
+        screen.blit(welcomeimg,(0,0))
+        for event in py.event.get():
+            if event.type==py.QUIT:
+                running= False
+            if event.type==py.KEYDOWN:
+                if event.key==py.K_RETURN:
+                    time.sleep(2)
+                    py.mixer.music.load("spacebackm.wav")
+                    py.mixer.music.play(-1)
+                    gameloop()
+        py.display.update()
+        clock.tick(50)
+def gameloop():
+    running = True
+    score =0
+    while running is True:
+        screen.blit(boostenemy,(m2.rect.x+230, m2.rect.y-30))
+        py.display.update()
+        score = score +1
+        clock.tick(fps)
+        for event in py.event.get():
+            if event.type==py.QUIT:
+                running= False
+            if event.type==py.KEYDOWN:
+                if event.key==py.K_UP:
+                    player.rect.y -=140
+                if event.key==py.K_DOWN:
+                    player.rect.y +=140
+                if event.key==py.K_SPACE:
+                    player.rect.x -=25
+                if player.rect.y >= 700:
+                    player.rect.y=700
+                elif player.rect.y <= 12:
+                    player.rect.y=12
+        all_sprites.update()
+        hits = py.sprite.spritecollide(player,mobs, False)
+        if hits:
+            screen.blit(explosion,(player.rect.x +100, player.rect.y-80))
+            text_screen2("GAME OVER",red,440,200)
+            py.mixer.music.load("streetgameover.wav")
+            py.mixer.music.play()
+            py.display.update()
+            time.sleep(4)
+            running = False
+        hits2 = py.sprite.spritecollide(player,mobs2, False)
+        if hits2:
+            screen.blit(explosion,(player.rect.x +100, player.rect.y-80))
+            text_screen2("GAME OVER",red,340,200)
+            py.mixer.music.load("streetgameover.wav")
+            py.mixer.music.play(-1)
+            py.display.update()
+            time.sleep(4)
+            running = False
+        screen.fill((0,0,0))
+        all_sprites.draw(screen)
+        text_screen("Score:"+ str(score),red,4,35)
+        py.display.update()
+        py.display.flip()
+    py.quit()
+    quit()   
+welcome()
+
